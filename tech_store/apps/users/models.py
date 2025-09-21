@@ -107,4 +107,4 @@ class Customer(models.Model):
         verbose_name_plural = "Customers"
 
     def __str__(self):
-        return f"Customer: {self.user.get_full_name()} ({self.user.email})}"
+        return f"Customer: {self.user.get_full_name()} ({self.user.email})"
