@@ -1,4 +1,5 @@
 import uuid
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -9,7 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 class UserManager(BaseUserManager):
     def _create_user(self, email, first_name, second_name, phone_number, password, **extra_fields):
         values = [email, first_name, second_name, phone_number]
-        field_value_map = dict(zip(self.model.REQUIRED_FIELDS, values))
+        field_value_map = dict(zip(self.model.REQUIRED_FIELDS, values, strict=False))
         for field_name, value in field_value_map.items():
             if not value:
                 raise ValueError(f"The {field_name} value must be set")
@@ -58,6 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom user model that uses email as the unique identifier.
     """
+
     class Role(models.TextChoices):
         CUSTOMER = "customer", "Customer"
         ADMIN = "admin", "Admin"
@@ -76,8 +78,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'second_name', 'phone_number']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "second_name", "phone_number"]
 
     class Meta:
         db_table = "users"
@@ -93,12 +95,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return f"{self.first_name} {self.second_name}".strip()
 
+
 class Customer(models.Model):
     """
     Customer profile model that extends the User model.
     """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer_profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="customer_profile")
     date_of_birth = models.DateField(blank=True, null=True)
 
     class Meta:
