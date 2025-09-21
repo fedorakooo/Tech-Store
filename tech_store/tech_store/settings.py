@@ -24,6 +24,8 @@ DJANGO_APPS = [
 
 THIRD_PATY_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
+    "phonenumber_field",
 ]
 
 LOCAL_APPS = ["apps.users"]
@@ -99,7 +101,14 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Custom user model
+AUTH_USER_MODEL = "users.User"
+
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
     ],
@@ -124,6 +133,23 @@ else:
         "http://localhost:3000",
         "http://127.0.0.1:3000",
     ]
+
+# JWT Configuration
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15), # 15 minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14), # 2 weeks
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+}
 
 # Security protection
 SECURE_BROWSER_XSS_FILTER = True
