@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from tech_store.apps.users.models import Customer, User
+from apps.users.models import Customer, User
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -28,10 +28,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
-    """
-    Serializer for user login.
-    """
-
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
@@ -69,10 +65,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.ModelSerializer):
-    """
-    Serializer for customer profile.
-    """
-
     user = UserSerializer(read_only=True)
 
     class Meta:
@@ -82,10 +74,6 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class CustomerCreateSerializer(serializers.ModelSerializer):
-    """
-    Serializer for creating customer profile.
-    """
-
     class Meta:
         model = Customer
         fields = ("date_of_birth",)

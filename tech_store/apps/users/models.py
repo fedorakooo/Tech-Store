@@ -56,10 +56,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """
-    Custom user model that uses email as the unique identifier.
-    """
-
     class Role(models.TextChoices):
         CUSTOMER = "customer", "Customer"
         ADMIN = "admin", "Admin"
@@ -90,17 +86,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return f"{self.role.capitalize()}: {self.get_full_name()} ({self.email})"
 
     def get_full_name(self):
-        """
-        Return the first_name plus the second_name, with a space in between.
-        """
         return f"{self.first_name} {self.second_name}".strip()
 
 
 class Customer(models.Model):
-    """
-    Customer profile model that extends the User model.
-    """
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="customer_profile")
     date_of_birth = models.DateField(blank=True, null=True)
